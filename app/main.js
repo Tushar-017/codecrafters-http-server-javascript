@@ -5,9 +5,18 @@ console.log("Logs from your program will appear here!")
 
 // Uncomment this to pass the first stage
 const server = net.createServer((socket) => {
-  socket.write("HTTP/1.1 200 OK\r\n\r\n")
-  socket.on("close", () => {
-    socket.end()
+  socket.on("data", (data) => {
+    const request = data.toString()
+    let responseStatus
+    const [method, path, _] = request.split(" ")
+    if (method === "GET") {
+      responseStatus = path === "/" ? "200 ok" : "404 NOT Found"
+    }
+    socket.write(`HTTP/1.1 ${responseStatus} \r\n\r\n`)
+
+    socket.on("close", () => {
+      socket.end()
+    })
   })
 })
 
