@@ -10,9 +10,9 @@ const server = net.createServer((socket) => {
     let responseStatus
     const [method, path, _] = request.split(" ")
     if (method === "GET") {
-      responseStatus = path === "/" ? "200 ok" : "404 NOT Found"
+      responseStatus = path === "/" ? "200 OK" : "404 Not Found"
     }
-    socket.write(`HTTP/1.1 ${responseStatus} \r\n\r\n`)
+    socket.write(`HTTP/1.1 ${responseStatus}\r\n\r\n`)
 
     socket.on("close", () => {
       socket.end()
