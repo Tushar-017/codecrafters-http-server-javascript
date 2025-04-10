@@ -25,10 +25,9 @@ const server = net.createServer((socket) => {
       }
     }
 
-    const headers = [contentType, contentLength].filter(Boolean).join("\r\n")
-    const response = [`HTTP/1.1 ${responseStatus}`, headers, "", body]
-      .filter(Boolean)
-      .join("\r\n")
+    const headers = [contentType, contentLength].filter(Boolean)
+    const responseLines = [`HTTP/1.1 ${responseStatus}`, ...headers, "", body]
+    const response = responseLines.join("\r\n")
 
     socket.write(response)
     socket.end()
