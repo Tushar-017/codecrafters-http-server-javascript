@@ -19,7 +19,7 @@ const server = net.createServer((socket) => {
       } else if (path.includes("/echo")) {
         const param = path.split("/")[2]
         contentType = "Content-Type: text/plain"
-        contentLength = `Content-length: ${param?.length}`
+        contentLength = param?.length && `Content-Length: ${param.length}` // Fixed capitalization of 'Length'
         body = param && param + "\r\n"
       }
     }
