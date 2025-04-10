@@ -21,12 +21,12 @@ const server = net.createServer((socket) => {
         responseStatus = "200 OK"
         contentType = "Content-Type: text/plain"
         contentLength = `Content-Length: ${param.length}`
-        body = param
+        body = param + "\r\n"
       }
     }
 
     const headers = [contentType, contentLength].filter(Boolean).join("\r\n")
-    const response = [`HTTP/1.1 ${responseStatus}`, headers, "", body]
+    const response = [`HTTP/1.1 ${responseStatus}`, headers, " ", body]
       .filter(Boolean)
       .join("\r\n")
 
