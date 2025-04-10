@@ -21,7 +21,7 @@ const server = net.createServer((socket) => {
         responseStatus = "200 OK"
         contentType = "Content-Type: text/plain"
         contentLength = `Content-Length: ${param.length}`
-        body = param + "\r\n"
+        body = param
       }
     }
 
