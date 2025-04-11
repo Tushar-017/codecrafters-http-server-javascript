@@ -26,9 +26,8 @@ const server = net.createServer((socket) => {
         contentLength = `Content-Length: ${param.length}`
         body = param
       } else if (path === "/user-agent") {
-        const userAgent = reqHeaders[8].split("User-Agent: ")[1]
-        // console.log(userAgent, "userAgent")
-        // console.log(userAgent.length, "LENGTH")
+        const userAgent = reqHeaders[2].split("User-Agent: ")[1]
+        console.log(userAgent, "userAgent")
         responseStatus = "200 OK"
         contentType = "Content-Type: text/plain"
         contentLength = `Content-Length: ${userAgent.length}`
