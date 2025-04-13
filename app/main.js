@@ -16,24 +16,23 @@ const server = net.createServer((socket) => {
 
     const [method, path, _] = request.split(" ")
 
-    if (method === "GET") {
-      if (path === "/") {
-        responseStatus = "200 OK"
-      } else if (path.startsWith("/files/")) {
-        const filename = path.split("/files/")[1]
-        const directoryArgIndex = process.argv.indexOf("--directory")
-        const directory =
-          directoryArgIndex !== -1 ? process.argv[directoryArgIndex + 1] : null
+    if (path === "/") {
+      responseStatus = "200 OK"
+    } else if (path.startsWith("/files/")) {
+      const filename = path.split("/files/")[1]
+      const directoryArgIndex = process.argv.indexOf("--directory")
+      const directory =
+        directoryArgIndex !== -1 ? process.argv[directoryArgIndex + 1] : null
 
-        // Remove trailing slash from directory if it exists
-        const cleanDirectory = directory?.endsWith("/")
-          ? directory.slice(0, -1)
-          : directory
+      // Remove trailing slash from directory if it exists
+      const cleanDirectory = directory?.endsWith("/")
+        ? directory.slice(0, -1)
+        : directory
 
-        console.log("Directory:", cleanDirectory)
-        console.log("Filename:", filename)
-        console.log("Full path:", `${cleanDirectory}/${filename}`)
-
+      console.log("Directory:", cleanDirectory)
+      console.log("Filename:", filename)
+      console.log("Full path:", `${cleanDirectory}/${filename}`)
+      if (method === "GET") {
         if (!cleanDirectory) {
           responseStatus = "500 Internal Server Error"
           body = "Directory not specified"
@@ -56,24 +55,32 @@ const server = net.createServer((socket) => {
             }
           }
         }
-      } else if (path.startsWith("/echo/")) {
-        const param = path.split("/")[2]
-        responseStatus = "200 OK"
-        contentType = "Content-Type: text/plain"
-        contentLength = `Content-Length: ${param.length}`
-        body = param
-      } else if (path === "/user-agent") {
-        const userAgentHeader = reqHeaders.find((header) =>
-          header.startsWith("User-Agent: ")
-        )
-        const userAgent = userAgentHeader
-          ? userAgentHeader.split("User-Agent: ")[1]
-          : ""
-        responseStatus = "200 OK"
-        contentType = "Content-Type: text/plain"
-        contentLength = `Content-Length: ${userAgent.length}`
-        body = userAgent
+      } else if (method === "POST") {
+        reqBody = reqHeaders[reqHeaders.length - 1]
+        try {
+          fs.writeFileSync(filename, reqBody)
+          responseStatus = "200 CREATED"
+        } catch (error) {
+          responseStatus = "404 Not Found"
+        }
       }
+    } else if (path.startsWith("/echo/")) {
+      const param = path.split("/")[2]
+      responseStatus = "200 OK"
+      contentType = "Content-Type: text/plain"
+      contentLength = `Content-Length: ${param.length}`
+      body = param
+    } else if (path === "/user-agent") {
+      const userAgentHeader = reqHeaders.find((header) =>
+        header.startsWith("User-Agent: ")
+      )
+      const userAgent = userAgentHeader
+        ? userAgentHeader.split("User-Agent: ")[1]
+        : ""
+      responseStatus = "200 OK"
+      contentType = "Content-Type: text/plain"
+      contentLength = `Content-Length: ${userAgent.length}`
+      body = userAgent
     }
 
     const headers = [contentType, contentLength].filter(Boolean)
