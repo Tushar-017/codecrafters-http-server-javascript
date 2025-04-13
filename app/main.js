@@ -59,7 +59,7 @@ const server = net.createServer((socket) => {
         reqBody = reqHeaders[reqHeaders.length - 1]
         try {
           fs.writeFileSync(filename, reqBody)
-          responseStatus = "201 CREATED"
+          responseStatus = "201 Created"
         } catch (error) {
           responseStatus = "404 Not Found"
         }
