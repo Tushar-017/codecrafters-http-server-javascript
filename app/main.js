@@ -24,6 +24,10 @@ const server = net.createServer((socket) => {
         const directory =
           process.argv[3] === "--directory" ? process.argv[4] : null
 
+        console.log("Directory:", directory)
+        console.log("Filename:", filename)
+        console.log("Full path:", `${directory}/${filename}`)
+
         if (!directory) {
           responseStatus = "500 Internal Server Error"
           body = "Directory not specified"
@@ -38,12 +42,12 @@ const server = net.createServer((socket) => {
             contentLength = `Content-Length: ${Buffer.byteLength(fileContent)}`
             body = fileContent
           } catch (error) {
+            console.log("Error details:", error)
             if (error.code === "ENOENT") {
               responseStatus = "404 Not Found"
             } else {
               responseStatus = "500 Internal Server Error"
             }
-            console.log(error, "error")
           }
         }
       } else if (path.startsWith("/echo/")) {
