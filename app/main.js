@@ -21,8 +21,9 @@ const server = net.createServer((socket) => {
         responseStatus = "200 OK"
       } else if (path.startsWith("/files/")) {
         const filename = path.split("/files/")[1]
+        const directoryArgIndex = process.argv.indexOf("--directory")
         const directory =
-          process.argv[3] === "--directory" ? process.argv[4] : null
+          directoryArgIndex !== -1 ? process.argv[directoryArgIndex + 1] : null
 
         console.log("Directory:", directory)
         console.log("Filename:", filename)
