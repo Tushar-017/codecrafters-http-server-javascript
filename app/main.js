@@ -25,17 +25,22 @@ const server = net.createServer((socket) => {
         const directory =
           directoryArgIndex !== -1 ? process.argv[directoryArgIndex + 1] : null
 
-        console.log("Directory:", directory)
-        console.log("Filename:", filename)
-        console.log("Full path:", `${directory}/${filename}`)
+        // Remove trailing slash from directory if it exists
+        const cleanDirectory = directory?.endsWith("/")
+          ? directory.slice(0, -1)
+          : directory
 
-        if (!directory) {
+        console.log("Directory:", cleanDirectory)
+        console.log("Filename:", filename)
+        console.log("Full path:", `${cleanDirectory}/${filename}`)
+
+        if (!cleanDirectory) {
           responseStatus = "500 Internal Server Error"
           body = "Directory not specified"
         } else {
           try {
             const fileContent = fs.readFileSync(
-              `${directory}/${filename}`,
+              `${cleanDirectory}/${filename}`,
               "binary"
             )
             responseStatus = "200 OK"
