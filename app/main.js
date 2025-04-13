@@ -1,3 +1,4 @@
+const fs = require("fs")
 const net = require("net")
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -13,12 +14,38 @@ const server = net.createServer((socket) => {
     const request = data.toString()
     const reqHeaders = request.split("\r\n")
 
-    // console.log(reqHeaders, "reqHeaders")
     const [method, path, _] = request.split(" ")
 
     if (method === "GET") {
       if (path === "/") {
         responseStatus = "200 OK"
+      } else if (path.startsWith("/files/")) {
+        const filename = path.split("/files/")[1]
+        const directory =
+          process.argv[3] === "--directory" ? process.argv[4] : null
+
+        if (!directory) {
+          responseStatus = "500 Internal Server Error"
+          body = "Directory not specified"
+        } else {
+          try {
+            const fileContent = fs.readFileSync(
+              `${directory}/${filename}`,
+              "binary"
+            )
+            responseStatus = "200 OK"
+            contentType = "Content-Type: application/octet-stream"
+            contentLength = `Content-Length: ${Buffer.byteLength(fileContent)}`
+            body = fileContent
+          } catch (error) {
+            if (error.code === "ENOENT") {
+              responseStatus = "404 Not Found"
+            } else {
+              responseStatus = "500 Internal Server Error"
+            }
+            console.log(error, "error")
+          }
+        }
       } else if (path.startsWith("/echo/")) {
         const param = path.split("/")[2]
         responseStatus = "200 OK"
