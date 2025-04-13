@@ -56,12 +56,17 @@ const server = net.createServer((socket) => {
           }
         }
       } else if (method === "POST") {
-        reqBody = reqHeaders[reqHeaders.length - 1]
-        try {
-          fs.writeFileSync(filename, reqBody)
-          responseStatus = "201 Created"
-        } catch (error) {
-          responseStatus = "404 Not Found"
+        if (!cleanDirectory) {
+          responseStatus = "500 Internal Server Error"
+          body = "Directory not specified"
+        } else {
+          reqBody = reqHeaders[reqHeaders.length - 1]
+          try {
+            fs.writeFileSync(`${cleanDirectory}/${filename}`, reqBody)
+            responseStatus = "201 Created"
+          } catch (error) {
+            responseStatus = "404 Not Found"
+          }
         }
       }
     } else if (path.startsWith("/echo/")) {
