@@ -10,9 +10,11 @@ const server = net.createServer((socket) => {
     let responseStatus = "404 Not Found"
     let contentType = ""
     let contentLength = ""
+    let encodingResponse = ""
     let body = ""
     const request = data.toString()
     const reqHeaders = request.split("\r\n")
+    const supportedEncoding = ["gzip"]
 
     const [method, path, _] = request.split(" ")
 
@@ -71,6 +73,16 @@ const server = net.createServer((socket) => {
       }
     } else if (path.startsWith("/echo/")) {
       const param = path.split("/")[2]
+      const acceptEncodingHeader = reqHeaders.find((header) =>
+        header.startsWith("Accept-Encoding: ")
+      )
+      const acceptEncoding = acceptEncodingHeader
+        ? acceptEncodingHeader.split("Accept-Encoding: ")[1]
+        : ""
+
+      if (acceptEncoding && supportedEncoding.includes(acceptEncoding)) {
+        encodingResponse = `Content-Encoding: ${acceptEncoding}`
+      }
       responseStatus = "200 OK"
       contentType = "Content-Type: text/plain"
       contentLength = `Content-Length: ${param.length}`
@@ -88,7 +100,9 @@ const server = net.createServer((socket) => {
       body = userAgent
     }
 
-    const headers = [contentType, contentLength].filter(Boolean)
+    const headers = [contentType, contentLength, encodingResponse].filter(
+      Boolean
+    )
     const responseLines = [`HTTP/1.1 ${responseStatus}`, ...headers, "", body]
     const response = responseLines.join("\r\n")
 
