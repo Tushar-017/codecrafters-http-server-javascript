@@ -81,7 +81,7 @@ const server = net.createServer((socket) => {
         : []
       console.log("acceptEncoding :", acceptEncoding)
       const matchedEncoding = acceptEncoding.filter((encoding) =>
-        supportedEncoding.includes(encoding)
+        supportedEncoding.includes(encoding.trim())
       )
       console.log("matchedEncoding :", matchedEncoding)
       if (matchedEncoding.length > 0) {
