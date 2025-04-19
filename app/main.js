@@ -76,9 +76,10 @@ const server = net.createServer((socket) => {
       const acceptEncodingHeader = reqHeaders.find((header) =>
         header.startsWith("Accept-Encoding: ")
       )
-      const acceptEncoding = acceptEncodingHeader
-        ? acceptEncodingHeader.split("Accept-Encoding: ")[1]
-        : ""
+      // const acceptEncoding = acceptEncodingHeader
+      //   ? acceptEncodingHeader.split("Accept-Encoding: ")[1]
+      //   : ""
+      const acceptEncoding = "gzip"
 
       if (acceptEncoding && supportedEncoding.includes(acceptEncoding)) {
         encodingResponse = `Content-Encoding: ${acceptEncoding}`
