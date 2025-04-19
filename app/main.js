@@ -77,11 +77,14 @@ const server = net.createServer((socket) => {
         header.startsWith("Accept-Encoding: ")
       )
       const acceptEncoding = acceptEncodingHeader
-        ? acceptEncodingHeader.split("Accept-Encoding: ")[1]
-        : ""
+        ? acceptEncodingHeader.split("Accept-Encoding: ")[1].split(",")
+        : []
 
-      if (acceptEncoding && supportedEncoding.includes(acceptEncoding)) {
-        encodingResponse = `Content-Encoding: ${acceptEncoding}`
+      const matchedEncoding = acceptEncoding.filter((encoding) =>
+        supportedEncoding.includes(encoding)
+      )
+      if (matchedEncoding.length > 0) {
+        encodingResponse = `Content-Encoding: ${matchedEncoding.join(", ")}`
       }
       responseStatus = "200 OK"
       contentType = "Content-Type: text/plain"
