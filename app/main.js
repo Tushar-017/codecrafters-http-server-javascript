@@ -1,5 +1,6 @@
 const fs = require("fs")
 const net = require("net")
+const zlib = require("zlib")
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!")
@@ -86,11 +87,20 @@ const server = net.createServer((socket) => {
       console.log("matchedEncoding :", matchedEncoding)
       if (matchedEncoding.length > 0) {
         encodingResponse = `Content-Encoding: ${matchedEncoding.join(", ")}`
+        const bodyEncoded = zlib.gzipSync(param)
+        const bodyEncodedLength = bodyEncoded.length
+        console.log(
+          "bodyEncoded ---",
+          bodyEncoded,
+          "---bodyEncodedLength--",
+          bodyEncodedLength
+        )
+
+        contentLength = `Content-Length: ${bodyEncodedLength}`
+        body = bodyEncoded
       }
       responseStatus = "200 OK"
       contentType = "Content-Type: text/plain"
-      contentLength = `Content-Length: ${param.length}`
-      body = param
     } else if (path === "/user-agent") {
       const userAgentHeader = reqHeaders.find((header) =>
         header.startsWith("User-Agent: ")
