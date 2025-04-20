@@ -88,7 +88,7 @@ const server = net.createServer((socket) => {
       console.log("matchedEncoding :", matchedEncoding)
       responseStatus = "200 OK"
       contentType = "Content-Type: text/plain"
-      contentLength = `Content-Length: ${Buffer.byteLength(param)}`
+
       if (matchedEncoding.length > 0) {
         encodingResponse = `Content-Encoding: ${matchedEncoding.join(", ")}`
         encoded = 1
@@ -97,6 +97,9 @@ const server = net.createServer((socket) => {
 
         contentLength = `Content-Length: ${bodyEncodedLength}`
         body = bodyEncoded
+      } else {
+        body = param
+        contentLength = `Content-Length: ${Buffer.byteLength(body)}`
       }
     } else if (path === "/user-agent") {
       const userAgentHeader = reqHeaders.find((header) =>
