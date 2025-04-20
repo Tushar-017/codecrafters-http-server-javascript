@@ -110,20 +110,20 @@ const server = net.createServer((socket) => {
       body = userAgent
     }
 
-    const headers = [contentType, contentLength, encodingResponse].filter(
-      Boolean
-    )
-    const responseLines = [`HTTP/1.1 ${responseStatus}`, ...headers, "", body]
-    // const encodedResponseLine = [`HTTP/1.1 ${responseStatus}`, ...headers, ""]
-    const response = responseLines.join("\r\n")
-    // const encodedResponse = encodedResponseLine.join("\r\n")
-
-    // if (encoded) {
-    //   socket.write(encodedResponse)
-    //   socket.write(body)
-    // } else {
-    socket.write(response)
-    // }
+    if (encoded) {
+      const headers = [contentType, contentLength, encodingResponse].filter(
+        Boolean
+      )
+      const responseLines = [`HTTP/1.1 ${responseStatus}`, ...headers, "", ""]
+      const headerString = responseLines.join("\r\n")
+      socket.write(headerString) // write headers as string
+      socket.write(body) // write gzipped body as binary
+    } else {
+      const headers = [contentType, contentLength].filter(Boolean)
+      const responseLines = [`HTTP/1.1 ${responseStatus}`, ...headers, "", body]
+      const response = responseLines.join("\r\n")
+      socket.write(response) // full response is plain string
+    }
     socket.end()
   })
   socket.on("close", () => {
