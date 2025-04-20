@@ -87,7 +87,7 @@ const server = net.createServer((socket) => {
       console.log("matchedEncoding :", matchedEncoding)
       if (matchedEncoding.length > 0) {
         encodingResponse = `Content-Encoding: ${matchedEncoding.join(", ")}`
-        const bodyEncoded = zlib.gzipSync(param)
+        const bodyEncoded = zlib.gzipSync(Buffer.from(param))
         const bodyEncodedLength = bodyEncoded.length
         console.log(
           "bodyEncoded ---",
@@ -97,7 +97,7 @@ const server = net.createServer((socket) => {
         )
 
         contentLength = `Content-Length: ${bodyEncodedLength}`
-        body = bodyEncoded.toString("binary")
+        body = bodyEncoded
       }
       responseStatus = "200 OK"
       contentType = "Content-Type: text/plain"
