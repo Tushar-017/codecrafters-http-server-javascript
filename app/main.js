@@ -117,9 +117,10 @@ const server = net.createServer((socket) => {
     const responseLines = [`HTTP/1.1 ${responseStatus}`, ...headers, "", body]
     const encodedResponseLine = [`HTTP/1.1 ${responseStatus}`, ...headers]
     const response = responseLines.join("\r\n")
+    const encodedResponse = encodedResponseLine.join("\r\n")
 
     if (encoded) {
-      socket.write(encodedResponseLine)
+      socket.write(encodedResponse)
       socket.write(body)
     } else {
       socket.write(response)
