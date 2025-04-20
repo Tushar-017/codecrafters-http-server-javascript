@@ -91,13 +91,13 @@ const server = net.createServer((socket) => {
         const bodyEncodedLength = bodyEncoded.length
         console.log(
           "bodyEncoded ---",
-          bodyEncoded,
+          bodyEncoded.toString("hex"),
           "---bodyEncodedLength--",
           bodyEncodedLength
         )
 
         contentLength = `Content-Length: ${bodyEncodedLength}`
-        body = bodyEncoded
+        body = bodyEncoded.toString("hex")
       }
       responseStatus = "200 OK"
       contentType = "Content-Type: text/plain"
