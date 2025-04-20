@@ -88,7 +88,7 @@ const server = net.createServer((socket) => {
       )
       console.log("matchedEncoding :", matchedEncoding)
       if (matchedEncoding.length > 0) {
-        encodingResponse = `Content-Encoding: gzip`
+        encodingResponse = `Content-Encoding: ${matchedEncoding.join(", ")}`
         encoded = 1
         const bodyEncoded = zlib.gzipSync(Buffer.from(param))
         const bodyEncodedLength = bodyEncoded.length
@@ -115,7 +115,7 @@ const server = net.createServer((socket) => {
       Boolean
     )
     const responseLines = [`HTTP/1.1 ${responseStatus}`, ...headers, "", body]
-    const encodedResponseLine = [`HTTP/1.1 ${responseStatus}`, ...headers, ""]
+    const encodedResponseLine = [`HTTP/1.1 ${responseStatus}`, ...headers]
     const response = responseLines.join("\r\n")
 
     if (encoded) {
