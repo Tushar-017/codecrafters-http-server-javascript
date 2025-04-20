@@ -115,7 +115,7 @@ const server = net.createServer((socket) => {
       Boolean
     )
     const responseLines = [`HTTP/1.1 ${responseStatus}`, ...headers, "", body]
-    const encodedResponseLine = [`HTTP/1.1 ${responseStatus}`, ...headers]
+    const encodedResponseLine = [`HTTP/1.1 ${responseStatus}`, ...headers, ""]
     const response = responseLines.join("\r\n")
     const encodedResponse = encodedResponseLine.join("\r\n")
 
