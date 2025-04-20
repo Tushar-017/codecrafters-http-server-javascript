@@ -97,7 +97,7 @@ const server = net.createServer((socket) => {
         )
 
         contentLength = `Content-Length: ${bodyEncodedLength}`
-        body = bodyEncoded
+        body = bodyEncoded.toString("binary")
       }
       responseStatus = "200 OK"
       contentType = "Content-Type: text/plain"
