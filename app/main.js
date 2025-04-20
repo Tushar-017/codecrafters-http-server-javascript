@@ -80,7 +80,7 @@ const server = net.createServer((socket) => {
       const acceptEncoding = acceptEncodingHeader
         ? acceptEncodingHeader.split("Accept-Encoding: ")[1].split(",")
         : []
-      console.log("acceptEncoding :", acceptEncoding)
+      console.log("acceptEncoding :->", acceptEncoding)
       const matchedEncoding = acceptEncoding.filter((encoding) =>
         supportedEncoding.includes(encoding.trim())
       )
