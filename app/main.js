@@ -88,6 +88,7 @@ const server = net.createServer((socket) => {
       console.log("matchedEncoding :", matchedEncoding)
       responseStatus = "200 OK"
       contentType = "Content-Type: text/plain"
+      contentLength = `Content-Length: ${param.length}`
       if (matchedEncoding.length > 0) {
         encodingResponse = `Content-Encoding: ${matchedEncoding.join(", ")}`
         encoded = 1
