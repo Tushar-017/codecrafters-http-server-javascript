@@ -14,7 +14,6 @@ const server = net.createServer((socket) => {
     let encodingResponse = ""
     let body = ""
     let encoded = 0
-    let bodyEncoded
     const request = data.toString()
     const reqHeaders = request.split("\r\n")
     const supportedEncoding = ["gzip"]
@@ -87,6 +86,8 @@ const server = net.createServer((socket) => {
         supportedEncoding.includes(encoding.trim())
       )
       console.log("matchedEncoding :", matchedEncoding)
+      responseStatus = "200 OK"
+      contentType = "Content-Type: text/plain"
       if (matchedEncoding.length > 0) {
         encodingResponse = `Content-Encoding: ${matchedEncoding.join(", ")}`
         encoded = 1
@@ -96,8 +97,6 @@ const server = net.createServer((socket) => {
         contentLength = `Content-Length: ${bodyEncodedLength}`
         body = bodyEncoded
       }
-      responseStatus = "200 OK"
-      contentType = "Content-Type: text/plain"
     } else if (path === "/user-agent") {
       const userAgentHeader = reqHeaders.find((header) =>
         header.startsWith("User-Agent: ")
