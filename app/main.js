@@ -16,9 +16,13 @@ const server = net.createServer((socket) => {
     let encoded = 0
     const request = data.toString()
     const reqHeaders = request.split("\r\n")
-    const connectionStatus = reqHeaders
-      .find((header) => header.startsWith("Connection: "))
-      .split(" ")[1]
+    const connectionHeader = reqHeaders.find((header) =>
+      header.startsWith("Connection: ")
+    )
+
+    const connectionStatus = connectionHeader
+      ? connectionHeader.split(" ")[1]
+      : null
     const supportedEncoding = ["gzip"]
 
     const [method, path, _] = request.split(" ")
