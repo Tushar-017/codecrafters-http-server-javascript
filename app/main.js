@@ -16,9 +16,9 @@ const server = net.createServer((socket) => {
     let encoded = 0
     const request = data.toString()
     const reqHeaders = request.split("\r\n")
-    const connectionStatus = reqHeaders.find(
-      (header) => header.startsWith("Connection: ").split("Connection: ")[1]
-    )
+    const connectionStatus = reqHeaders
+      .find((header) => header.startsWith("Connection: "))
+      .split(" ")[1]
     const supportedEncoding = ["gzip"]
 
     const [method, path, _] = request.split(" ")
@@ -116,8 +116,6 @@ const server = net.createServer((socket) => {
       contentLength = `Content-Length: ${userAgent.length}`
       body = userAgent
     }
-
-    console.log("RRRReqHeaders", reqHeaders)
 
     if (encoded) {
       const headers = [contentType, contentLength, encodingResponse].filter(
