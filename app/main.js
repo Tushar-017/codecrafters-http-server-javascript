@@ -12,6 +12,7 @@ const server = net.createServer((socket) => {
     let contentType = ""
     let contentLength = ""
     let encodingResponse = ""
+    let connectionResponse = ""
     let body = ""
     let encoded = 0
     const request = data.toString()
@@ -23,9 +24,15 @@ const server = net.createServer((socket) => {
     const connectionStatus = connectionHeader
       ? connectionHeader.split(" ")[1]
       : null
+    const connectionClose =
+      connectionStatus && connectionStatus.toLowerCase() === "close"
     const supportedEncoding = ["gzip"]
 
     const [method, path, _] = request.split(" ")
+
+    if (connectionClose) {
+      connectionResponse = "Connection: Close"
+    }
 
     if (path === "/") {
       responseStatus = "200 OK"
@@ -122,15 +129,21 @@ const server = net.createServer((socket) => {
     }
 
     if (encoded) {
-      const headers = [contentType, contentLength, encodingResponse].filter(
-        Boolean
-      )
+      const headers = [
+        contentType,
+        contentLength,
+        encodingResponse,
+        connectionResponse,
+      ].filter(Boolean)
+
       const responseLines = [`HTTP/1.1 ${responseStatus}`, ...headers, "", ""]
       const headerString = responseLines.join("\r\n")
       socket.write(headerString) // write headers as string
       socket.write(body) // write gzipped body as binary
     } else {
-      const headers = [contentType, contentLength].filter(Boolean)
+      const headers = [contentType, contentLength, connectionResponse].filter(
+        Boolean
+      )
       const responseLines = [`HTTP/1.1 ${responseStatus}`, ...headers, "", body]
       const response = responseLines.join("\r\n")
       socket.write(response) // full response is plain string
